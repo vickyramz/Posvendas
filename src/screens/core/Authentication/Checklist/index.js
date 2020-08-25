@@ -15,11 +15,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import DropdownAlert from 'react-native-dropdownalert';
 import api from '../../../../services/api';
 import { useNetInfo } from "@react-native-community/netinfo";
+import { useDispatch, useSelector } from 'react-redux';
+import * as BindActions from '../../../../redux/Actions';
 import Camera from '../../../../common/camera';
 import Step1 from './Step1/';
 import Step2 from './Step2/'
 import Step3 from './Step3'
 import Step4 from './step4'
+import Step5 from './step5'
 // import Slider from '@react-native-community/slider'
 import Wizard from "react-native-wizard"
   
@@ -52,6 +55,7 @@ const CheckList = ({ navigation, props }) => {
         console.log(name)
         console.log(value)
     }
+    const  dispatch =useDispatch();
     useEffect(() => {
         getPalcadata();
         BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
@@ -92,9 +96,11 @@ const CheckList = ({ navigation, props }) => {
             const token = await AsyncStorage.getItem('token');
             console.log("Token",token)
             await api.get(`/ord/ws/checklist/buscarChecklist?token=${token}`).then(res =>{
-                if(res.data){
+                
+                if(res.data){    
                     setProgress(false);
                     setDropdownList(res.data)
+                   AsyncStorage.setItem('checkId',(res.data[0].idChecklist).toString());
                     console.log("Response",res.data)
                 } else{
                     setProgress(false);
@@ -233,6 +239,9 @@ const stepList = [
       },
       {
         content: <Step4 style={{ width: 100, height: 100, backgroundColor: "#e04851" }} />,
+      },
+      {
+        content: <Step5 style={{ width: 100, height: 100, backgroundColor: "#e04851" }} />,
       },
   ]
  

@@ -10,7 +10,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../../../../services/api';
 import Emoji from 'react-native-emoji';
 import { styles } from '../styles.js';
-
+import * as BindActions from '../../../../redux/Actions';
+import { useDispatch, useSelector } from 'react-redux';
 import muitoSatisfeito from '../../../../assets/MuitoSatisfeito.png';
 import satisfeito from '../../../../assets/Satisfeito.png';
 import normal from '../../../../assets/Normal.png';
@@ -38,7 +39,7 @@ export default function Perguntas({ navigation }) {
     useEffect(() => {
         buscarChecklist();
     }, []);
-
+     const  dispatch =useDispatch();
     async function buscarChecklist() {
         setProgress(true);
         setTitle('Aguarde');
@@ -74,6 +75,7 @@ export default function Perguntas({ navigation }) {
         let token = await AsyncStorage.getItem('token');
         api.get(`/ord/ws/checklist/buscarGrupoPerguntas?token=${token}&idChecklist=${checklist.idChecklist}`).then(resp => {
             const data = resp.data;
+            dispatch(BindActions.saveList(data));
             const grupos = data.grupos;
             grupos.map(grupo => {
                 setPergundas(grupo.perguntas);
