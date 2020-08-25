@@ -196,7 +196,7 @@ const Styles = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
         padding:3,
-        marginLeft:10
+        marginLeft:5
     },
     DefectKeyRender:{
        width:22,
@@ -204,7 +204,7 @@ const Styles = StyleSheet.create({
        backgroundColor:'#fff',
        borderRadius:3,
        borderColor:'#000' ,
-       marginLeft:8,
+       marginLeft:6.5,
        justifyContent:'center',
        alignItems:'center',
     },
@@ -222,7 +222,7 @@ const Styles = StyleSheet.create({
           alignItems:'center',justifyContent:'center'
       },
       ButtonRender:{
-        width:100,
+        width:90,
         height:60, 
         marginLeft:10,
         backgroundColor:primaryColor,

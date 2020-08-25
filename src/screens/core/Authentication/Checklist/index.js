@@ -23,6 +23,9 @@ import Step2 from './Step2/'
 import Step3 from './Step3'
 import Step4 from './step4'
 import Step5 from './step5'
+
+
+import Step6 from './Step6'
 // import Slider from '@react-native-community/slider'
 import Wizard from "react-native-wizard"
   
@@ -242,6 +245,10 @@ const stepList = [
       },
       {
         content: <Step5 style={{ width: 100, height: 100, backgroundColor: "#e04851" }} />,
+      },
+
+      {
+        content: <Step6 style={{ width: 100, height: 100, backgroundColor: "#e04851" }} />,
       },
   ]
  
