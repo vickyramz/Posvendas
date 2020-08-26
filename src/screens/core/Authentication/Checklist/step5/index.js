@@ -45,19 +45,39 @@ const Step5=(props)=>  {
           }
       });
   }
+  const AnswerTouch=(items,indexs,groupIndex)=>{
+   var tempListGroup= groupList.map((groupitem,groupindexs)=>{
+    var tempList=groupitem.perguntas;
+     tempList=tempList.map((item,index)=>{
+      if(index===groupIndex){
+        item.answerSelected=items
+      }
+      return item;
+    })
+    return groupitem;
+   })
+  console.log('itemList',tempListGroup)
+    setgroupList([...tempListGroup])
+  }
   const QaComponent=({item,index})=>{
+    let tempArray=[];
+    tempArray.push(item.opcao1);
+    tempArray.push(item.opcao2);
+
     return(
         <TouchableOpacity >
         <View style={{justifyContent:'center',alignItems:'center',marginTop:10,height:100,borderBottomColor:primaryColor,borderBottomWidth:0.5,width:windowWidth}}>
         <Text style={{textAlign:'center'}}>{item.descricao}</Text>
         <View style={{justifyContent:'center',alignItems:'center',marginTop:10,flexDirection:'row'}}>
-          <View style={{padding:15,backgroundColor:primaryColor,borderColor:primaryColor,borderWidth:0.5,}}>
-          <Text style={{textAlign:'center'}}>{item.opcao1}</Text>
-          </View>
-        
-          <View style={{padding:15,borderColor:primaryColor,borderWidth:0.5,}}>
-          <Text style={{textAlign:'center'}}>{item.opcao2}</Text>
-          </View>
+          {tempArray.map((items,indexs)=>{
+            return(
+              <TouchableOpacity onPress={()=>AnswerTouch(items,indexs,index)}>
+              <View style={{padding:15,backgroundColor: item.answerSelected===items?primaryColor:'#fff',borderColor:item.answerSelected===items?primaryColor:'#fff',borderWidth:0.5,}}>
+              <Text style={{textAlign:'center'}}>{items}</Text>
+              </View>
+              </TouchableOpacity>
+            )
+          })}        
         </View>
         </View>
         </TouchableOpacity>
