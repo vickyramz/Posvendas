@@ -33,7 +33,7 @@ const Step5=(props)=>  {
       api.get(`/ord/ws/checklist/buscarGrupoPerguntas?token=${token}&idChecklist=${checkId}`).then(resp => {
         setProgress(false);
           const data = resp.data;
-          setgroupList(data.grupos)
+          setgroupList(data)
            console.log('GroupListData----response',data)
       }).catch(ex => {
           if (ex.response.status === 404) {

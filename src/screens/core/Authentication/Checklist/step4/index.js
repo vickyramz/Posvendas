@@ -9,6 +9,9 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import { styles } from '../../Agendamentos/styles';
 import EditText from '../../../../../components/EditText'
 import RBSheet from 'react-native-raw-bottom-sheet';
+import SincProgress from '../../../../../components/SincProgress';
+import api from '../../../../../services/api';
+
 const defectDetails=[
     {id:0,key:'M',value:'MANCHADO'},
     {id:1,key:'D',value:'DSCASCADO'},
@@ -34,17 +37,55 @@ const Step4=()=>  {
     const [isEnable,setisEnable]=useState(false);
     const [IndexKey,setketTouchIndex]=useState('');
     const [selectedText,setselectedText]=useState('');
+    const [imageList,setImageList]=useState([]);
+    const [getPlacaModel, setPlacaModel] = useState('');
 
     const [getDefectDetails,setDefectDetails]=useState()
+    const [progress, setProgress] = useState(false);
     useEffect(() => {
        
         getPalcadata();
+        
     }, []);
+
+
+    const getbuscarImagensModelo= async (modelo)=>{
+        setProgress(true);
+        let token = await AsyncStorage.getItem('token');
+        const checkId = await AsyncStorage.getItem('checkId');
+        const emitente = await AsyncStorage.getItem('emitente')
+        const emitenteCode = await AsyncStorage.getItem('codigoEmitente');
+
+        console.log("getPlacaModel",modelo)
+        api.get(`/ord/ws/checklist/buscarImagensModelo?token=${token}&emitente=${emitenteCode}&modelo=${modelo}`).then(resp => {
+          setProgress(false);
+            const data = resp.data;
+            if(resp.data.sucesso ==="true"){
+                setImageList(data)
+                console.log('ImageData----response',data)
+            }else{
+                
+            }
+            
+        }).catch(ex => {
+            if (ex.response.status === 404) {
+                setProgress(false);
+               
+            } else {
+                setProgress(false);
+               
+            }
+        });
+    }
   const  getPalcadata = async () => {
         const placadata = JSON.parse(await AsyncStorage.getItem('selectAgendamentos'));            
             if(placadata !== null){
+                setPlacaModel(placadata[6] !== null ? placadata[6] : '')
                 setPlacamsg(placadata[2] !== null ? placadata[2] : '')
+                
             }
+
+            getbuscarImagensModelo(placadata[6])
     }
     const KeyTouch=(item,index)=>{
         setselectedText(item.key)
@@ -111,6 +152,7 @@ const Step4=()=>  {
         return(
             <View style={Styles.mainContainer}>
             <ScrollView showsVerticalScrollIndicator={false} >
+            {/* <SincProgress visible={progress} title={"title"} message={"message"} /> */}
             {getPlaca !== '' ?
                     <View style={{alignItems:'center',backgroundColor:'#cacaca',padding:10,borderRadius:10,marginTop:10,marginHorizontal:20}}>
                         <Text>Placa: {getPlaca}</Text>
