@@ -12,7 +12,7 @@ import { styles } from '../../Agendamentos/styles';
 import EditText from '../../../../../components/EditText'
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { useSelector } from 'react-redux';
-
+import Carousel from 'react-native-snap-carousel';
 const Step5=(props)=>  {
   
     useEffect(() => {
@@ -87,18 +87,17 @@ const Step5=(props)=>  {
             <View style={Styles.mainContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>
             <SincProgress visible={progress} title={title} message={message} />
-            {groupList.map((item,index)=>{
-             
-              return(
+            {groupList && groupList.length>0?
+            groupList.map((item,index)=>{
+                return(
                 <View>
                 <Text style={{textAlign:'center',fontWeight:'bold',marginTop:10}}>{item.descricao}</Text>
                 <FlatList
-                data={item.perguntas}                
-            
+                data={item.perguntas}                          
                 renderItem={QaComponent}></FlatList> 
                 </View>
               )
-            })}
+            }):null}
             <View>
 
             </View>
