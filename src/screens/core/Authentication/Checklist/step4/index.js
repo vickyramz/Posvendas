@@ -11,7 +11,7 @@ import EditText from '../../../../../components/EditText'
 import RBSheet from 'react-native-raw-bottom-sheet';
 import SincProgress from '../../../../../components/SincProgress';
 import api from '../../../../../services/api';
-
+import Carousel from 'react-native-snap-carousel';
 const defectDetails=[
     {id:0,key:'M',value:'MANCHADO'},
     {id:1,key:'D',value:'DSCASCADO'},
@@ -55,26 +55,40 @@ const Step4=()=>  {
         const checkId = await AsyncStorage.getItem('checkId');
         const emitente = await AsyncStorage.getItem('emitente')
         const emitenteCode = await AsyncStorage.getItem('codigoEmitente');
-
+        modelo='BZ2'
         console.log("getPlacaModel",modelo)
         api.get(`/ord/ws/checklist/buscarImagensModelo?token=${token}&emitente=${emitenteCode}&modelo=${modelo}`).then(resp => {
           setProgress(false);
             const data = resp.data;
-            if(resp.data.sucesso ==="true"){
-                setImageList(data)
-                console.log('ImageData----response',data)
+            if(resp.data.sucesso){
+                let finalArray=[]
+                let imageObjectKey={
+                    imagemDireita:'imagemDireita',
+                    imagemEsquerda:'imagemEsquerda',
+                    imagemFrontal:'imagemFrontal',
+                    imagemTraseira:'imagemTraseira'
+                }
+                let imagearray=Object.keys(data)
+                imagearray.map((item,index)=>{
+                  if(imageObjectKey[item]===item){      
+                      finalArray.push(data[imageObjectKey[item]])
+                  }
+                })
+                setImageList(finalArray)
+                console.log('ImageData----response',finalArray)
             }else{
                 
             }
             
         }).catch(ex => {
-            if (ex.response.status === 404) {
-                setProgress(false);
+            console.log('ex',ex)
+            // if (ex.response.status === 404) {
+            //     setProgress(false);
                
-            } else {
-                setProgress(false);
+            // } else {
+            //     setProgress(false);
                
-            }
+            // }
         });
     }
   const  getPalcadata = async () => {
@@ -87,6 +101,7 @@ const Step4=()=>  {
 
             getbuscarImagensModelo(placadata[6])
     }
+
     const KeyTouch=(item,index)=>{
         setselectedText(item.key)
         setisEnable(true);
@@ -97,6 +112,14 @@ const Step4=()=>  {
         return(
             <View style={Styles.DefectList}>
                  <Text >{item.key}:{item.value}</Text>
+            </View>
+        )
+    }
+    const _renderItem =({item,index})=>{
+       
+        return(
+            <View>
+ <Image  style={Styles.image} source={{uri:`data:image/gif;base64,${item}`}}></Image>
             </View>
         )
     }
@@ -171,7 +194,13 @@ const Step4=()=>  {
                     renderItem={DefectKeyRender}></FlatList>               
                 </View>
                 <View  onTouchStart={(e) => {setTextPosition(e)}} style={Styles.BackgroundImageContainer}>
-                <ImageBackground imageStyle={Styles.image} style={Styles.image} source={require('../../../../../assets/rearcar.jpeg')}></ImageBackground>
+                                    <Carousel            
+              data={imageList}
+              renderItem={_renderItem}
+              sliderWidth={windowWidth}
+              itemWidth={windowWidth}
+            />
+               
            {TextArray.length>0?   
            TextArray.map((item,index)=>{
                return(
