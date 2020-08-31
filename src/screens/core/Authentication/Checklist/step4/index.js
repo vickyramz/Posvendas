@@ -39,6 +39,8 @@ const Step4=()=>  {
     const [selectedText,setselectedText]=useState('');
     const [imageList,setImageList]=useState([]);
     const [getPlacaModel, setPlacaModel] = useState('');
+    const [title, setTitle] = useState('');
+    const [message, setMessage] = useState('');
 
     const [getDefectDetails,setDefectDetails]=useState()
     const [progress, setProgress] = useState(false);
@@ -50,6 +52,8 @@ const Step4=()=>  {
 
 
     const getbuscarImagensModelo= async (modelo)=>{
+        setTitle('Aguarde');
+      setMessage('Carregando imagens...');
         setProgress(true);
         let token = await AsyncStorage.getItem('token');
         const checkId = await AsyncStorage.getItem('checkId');
@@ -175,7 +179,7 @@ const Step4=()=>  {
         return(
             <View style={Styles.mainContainer}>
             <ScrollView showsVerticalScrollIndicator={false} >
-            {/* <SincProgress visible={progress} title={"title"} message={"message"} /> */}
+            <SincProgress visible={progress} title={title} message={message} />
             {getPlaca !== '' ?
                     <View style={{alignItems:'center',backgroundColor:'#cacaca',padding:10,borderRadius:10,marginTop:10,marginHorizontal:20}}>
                         <Text>Placa: {getPlaca}</Text>

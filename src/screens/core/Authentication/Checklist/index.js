@@ -237,9 +237,9 @@ const stepList = [
     {
       content: <Step2 style={{ width: 100, height: 100, backgroundColor: "#e04851" }} />,
     },
-    {
-        content: <Step3 style={{ width: 100, height: 100, backgroundColor: "#e04851" }} />,
-      },
+    // {
+    //     content: <Step3 style={{ width: 100, height: 100, backgroundColor: "#e04851" }} />,
+    //   },
       {
         content: <Step4 style={{ width: 100, height: 100, backgroundColor: "#e04851" }} />,
       },
