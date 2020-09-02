@@ -161,8 +161,8 @@ const Step4=()=>  {
         else{
             let ImageArray=imageList;
             ImageArray.map((item,index)=>{
-                item.DefectList=[]
-                return ImageArray
+                item.DefectList && item.DefectList.length>0? item.DefectList.splice(0,item.DefectList.length):[]
+                return item
             })
             setImageList([...ImageArray])
            
