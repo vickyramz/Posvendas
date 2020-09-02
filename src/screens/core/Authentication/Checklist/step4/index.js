@@ -74,8 +74,12 @@ const Step4=()=>  {
                 }
                 let imagearray=Object.keys(data)
                 imagearray.map((item,index)=>{
-                  if(imageObjectKey[item]===item){      
-                      finalArray.push(data[imageObjectKey[item]])
+                  if(imageObjectKey[item]===item){  
+                      let localObj={};
+                      localObj={
+                        'ImageSources' : data[imageObjectKey[item]]
+                      }   
+                      finalArray.push(localObj)
                   }
                 })
                 setImageList(finalArray)
@@ -122,22 +126,46 @@ const Step4=()=>  {
     const _renderItem =({item,index})=>{
        
         return(
-            <View>
- <Image  style={Styles.image} source={{uri:`data:image/gif;base64,${item}`}}></Image>
+            <View onTouchStart={(e) => setTextPosition(e,item,index)} style={Styles.BackgroundImageContainer}>
+ <Image  style={Styles.image} source={{uri:`data:image/gif;base64,${item.ImageSources}`}}></Image>
+
+ {item.DefectList && item.DefectList.length>0? item.DefectList.map((items,indexs)=>{
+     return(
+        <View style={{position:'absolute',left:items.left,top:items.top,  height:30,width:35,
+        backgroundColor:'#fff',
+        borderRadius:3,
+        borderColor:'#000' ,
+        marginLeft:8,
+        justifyContent:'center',
+        alignItems:'center',}}>
+                         <Text>{items.selectedText}</Text>
+                         </View>
+     )
+ }):null}
+
             </View>
         )
     }
     const buttonAction=(item,index)=>{
         if(item.id===0){
-            let TextLocal=TextArray;
-            TextLocal.splice(-1,1)
-            setTextArray([...TextLocal])
+            let TextLocal=imageList;
+            TextLocal.map((item,index)=>{
+                item.DefectList && item.DefectList.length>0? item.DefectList.splice(-1,1):[]
+                return item
+            })
+            setImageList([...TextLocal])
         }
         else if(item.id==2){
             RBShee.current.open();        
         }
         else{
-            setTextArray([...[]])
+            let ImageArray=imageList;
+            ImageArray.map((item,index)=>{
+                item.DefectList=[]
+                return ImageArray
+            })
+            setImageList([...ImageArray])
+           
         }
     }
     const DefectKeyRender=({item,index})=>{
@@ -149,7 +177,7 @@ const Step4=()=>  {
             </TouchableOpacity>
         )
     }
-    const setTextPosition=(e)=>{
+    const setTextPosition=(e,items,indexs)=>{
         if(isEnable){
             const l= Math.round(e.nativeEvent.locationX);
             const t= Math.round(e.nativeEvent.locationY);
@@ -158,13 +186,24 @@ const Step4=()=>  {
                 left:l,
                 top:t            
             }
-            let Textarraylocal=TextArray;
-            Textarraylocal.push(selectedObj);
-            setTextArray([...Textarraylocal])
+            let TextLocal=imageList;
+                TextLocal=TextLocal.map((item,index)=>{
+                    if(indexs===index){
+                        let Textarraylocal=item.DefectList && item.DefectList.length>0?[...item.DefectList]:[]
+                        Textarraylocal.push(selectedObj);                        
+                        item.DefectList=Textarraylocal
+                    }
+                    return item
+                })    
+                console.log('TextLocal',TextLocal)             
+            setImageList([...TextLocal])
         }
     }
     const closed=()=>{
         RBShee.current.close();
+    }
+    const snapChange=()=>{
+        //setTextArray([...[]])
     }
     const ButtonRender=({item,index})=>{
         return(
@@ -197,30 +236,17 @@ const Step4=()=>  {
                     showsHorizontalScrollIndicator={false}
                     renderItem={DefectKeyRender}></FlatList>               
                 </View>
-                <View  onTouchStart={(e) => {setTextPosition(e)}} style={Styles.BackgroundImageContainer}>
-                                    <Carousel            
+                <View  >
+                                    <Carousel    
+                                    swipeThreshold={0.1}   
+                                    onSnapToItem={(item,index)=>snapChange(item,index)}  
               data={imageList}
               renderItem={_renderItem}
               sliderWidth={windowWidth}
               itemWidth={windowWidth}
             />
                
-           {TextArray.length>0?   
-           TextArray.map((item,index)=>{
-               return(
-                <View style={{position:'absolute',left:item.left,top:item.top,  height:30,width:35,
-                backgroundColor:'#fff',
-                borderRadius:3,
-                borderColor:'#000' ,
-                marginLeft:8,
-                justifyContent:'center',
-                alignItems:'center',}}>
-                                 <Text>{item.selectedText}</Text>
-                                 </View>
-               )
-           })
-        
-                        :null}
+    
                    
     
                 </View> 
